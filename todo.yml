@@ -10,6 +10,10 @@
 
 
 
+    - name: create network
+      docker_network:
+        name: "todo_net"
+
     - name: Deploy postgres
       docker_container:
         name: "postgres"
