@@ -8,47 +8,52 @@
 
 
 
-
+    - name: Install python docker
+      apt: name=python3-docker state=latest
+    
 
     - name: create network
       docker_network:
-        name: "todo_net"
+        name: todo_net
 
     - name: Deploy postgres
       docker_container:
-        name: "postgres"
+        name: postgres
         image: mishadhd/todo_db
         state: started
         networks:
-          - name: "todo_net"
+          - name: todo_net
         env:
-          POSTGRES_DB: "docker_app_db"
-          POSTGRES_USER: "docker_app"
-          POSTGRES_PASSWORD: "docker_app"
+          POSTGRES_DB: docker_app_db
+          POSTGRES_USER: docker_app
+          POSTGRES_PASSWORD: docker_app
 
 
     - name: deploy backend
       docker_container:
-        name: "backend"
+        name: backend
         image: mishadhd/todo_backend
         state: started
         networks:
-          - name: "todo_net"
+          - name: todo_net
         env:
-          HOST: "postgres"
+          HOST: postgres
           PORT: "5432"
-          DB: "docker_app_db"
-          DB_USERNAME: "docker_app"
-          DB_PASSWORD: "docker_app"
+          DB: docker_app_db
+          DB_USERNAME: docker_app
+          DB_PASSWORD: docker_app
 
 
 
 
     - name: Deploy container nginx
       docker_container:
-        name: "nginx"
+        name: nginx
         image: mishadhd/todo_nginx
+        volumes:
+          - ./nginx.conf:/etc/nginx/nginx.conf:ro 
         networks:
-          - name: "todo_net"
+          - name: todo_net
         ports:
-          - "81:80"
+          - 80:80
+  
